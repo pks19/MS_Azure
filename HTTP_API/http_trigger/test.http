@@ -1,3 +1,7 @@
+
+POST https://first-azure-python-function.azurewebsites.net/api/http_trigger
+Content-Type: application/json
+
 {
-    "name": "Azure"
+    "text":"I am ok"
 }

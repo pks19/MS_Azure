@@ -1,24 +1,20 @@
 import logging
 
 import azure.functions as func
-
+from textblob import TextBlob
+import nltk
+import os
+import json
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+    logging.info('HTTP trigger function processed a request.')
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+    try:
+        req_body = req.get_json()
+    except ValueError:
+        pass
 
-    if name:
-        return func.HttpResponse(f"Hello {name}!")
-    else:
-        return func.HttpResponse(
-             "Please pass a name on the query string or in the request body",
-             status_code=400
-        )
+    text = req_body['text']
+    blob = TextBlob(text)
+    polarity = blob.sentiment.polarity    
+    return func.HttpResponse(json.dumps(polarity),mimetype = 'application/json')
